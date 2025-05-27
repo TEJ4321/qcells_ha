@@ -11,7 +11,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    ip = entry.data["ip"]
+    ip = entry.data["ip_address"]
     password = entry.data["password"]
     update_interval = timedelta(seconds=entry.data.get("update_interval", 10))
     coordinator = QcellsDataUpdateCoordinator(hass, ip, password, update_interval)
