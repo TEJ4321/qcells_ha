@@ -22,23 +22,21 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
         self._password = password
         self._session = async_get_clientsession(hass, verify_ssl=False)
 
-    async def _async_login(self):
-        login_url = f"https://{self._ip}:7000/login"
-
-        form = FormData()
-        form.add_field("pswd", self._password)  # Postman does NOT send "name=Login"
-        
-        async with self._session.post(login_url, data=form) as resp:
-            if resp.status != 200:
-                raise UpdateFailed(f"Login failed: {resp.status}")
-            _LOGGER.debug("Login successful")
-
     async def _async_update_data(self):
         try:
-            await self._async_login()
+            login_url = f"https://{self._ip}:7000/login"
+            form = FormData()
+            form.add_field("pswd", self._password)
 
-            status_url = f"https://{self._ip}:7000/system/status/pcssystem"
             async with async_timeout.timeout(10):
+                async with self._session.post(login_url, data=form) as resp:
+                    if resp.status != 200:
+                        body = await resp.text()
+                        raise UpdateFailed(f"Login failed: {resp.status}, body: {body}")
+                    _LOGGER.debug("Login successful")
+
+                # Same session is used for the next request
+                status_url = f"https://{self._ip}:7000/system/status/pcssystem"
                 async with self._session.get(status_url, headers={"Accept": "application/json"}) as resp:
                     if resp.status != 200:
                         raise UpdateFailed(f"Error fetching Qcells data: {resp.status}")
