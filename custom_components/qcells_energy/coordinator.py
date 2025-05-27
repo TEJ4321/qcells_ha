@@ -6,6 +6,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import DOMAIN
 import logging
 import async_timeout
+from aiohttp import FormData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,10 +24,11 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_login(self):
         login_url = f"https://{self._ip}:7000/login"
-        payload = {"name": "Login", "pswd": self._password}
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-        async with self._session.post(login_url, data=payload, headers=headers) as resp:
+        form = FormData()
+        form.add_field("pswd", self._password)  # Postman does NOT send "name=Login"
+        
+        async with self._session.post(login_url, data=form) as resp:
             if resp.status != 200:
                 raise UpdateFailed(f"Login failed: {resp.status}")
             _LOGGER.debug("Login successful")
