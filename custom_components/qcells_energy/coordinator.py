@@ -35,10 +35,11 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
         }
 
         async with async_timeout.timeout(10):
-            async with self._session.post(login_url, data=form, headers=headers, allow_redirects=False) as resp:
+            async with self._session.post(login_url, data=form, headers=headers) as resp:
                 body = await resp.text()
 
-                if resp.status != 200:
+                if resp.status not in (200, 302):
+                    body = await resp.text()
                     raise UpdateFailed(f"Login failed: {resp.status}, body: {body[:300]}")
 
                 # Check for session cookie
