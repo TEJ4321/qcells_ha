@@ -22,21 +22,43 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
         self._password = password
         self._session = async_get_clientsession(hass, verify_ssl=False)
 
+    async def _async_login(self):
+        login_url = f"https://{self._ip}:7000/login"
+
+        form = FormData()
+        form.add_field("pswd", self._password)
+
+        headers = {
+            "User-Agent": "PostmanRuntime/7.44.0",
+            "Accept": "*/*",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        async with async_timeout.timeout(10):
+            async with self._session.post(login_url, data=form, headers=headers, allow_redirects=False) as resp:
+                body = await resp.text()
+
+                if resp.status != 200:
+                    raise UpdateFailed(f"Login failed: {resp.status}, body: {body[:300]}")
+
+                # Check for session cookie
+                session_cookie = None
+                for cookie in self._session.cookie_jar:
+                    _LOGGER.debug("Cookie received: %s=%s", cookie.key, cookie.value)
+                    if "session" in cookie.key:
+                        session_cookie = cookie
+
+                if not session_cookie:
+                    raise UpdateFailed("Login failed: No session cookie received")
+
+                _LOGGER.debug("Login successful")
+
     async def _async_update_data(self):
         try:
-            login_url = f"https://{self._ip}:7000/login"
-            form = FormData()
-            form.add_field("pswd", self._password)
+            await self._async_login()
 
+            status_url = f"https://{self._ip}:7000/system/status/pcssystem"
             async with async_timeout.timeout(10):
-                async with self._session.post(login_url, data=form) as resp:
-                    if resp.status != 200:
-                        body = await resp.text()
-                        raise UpdateFailed(f"Login failed: {resp.status}, body: {body}")
-                    _LOGGER.debug("Login successful")
-
-                # Same session is used for the next request
-                status_url = f"https://{self._ip}:7000/system/status/pcssystem"
                 async with self._session.get(status_url, headers={"Accept": "application/json"}) as resp:
                     if resp.status != 200:
                         raise UpdateFailed(f"Error fetching Qcells data: {resp.status}")
