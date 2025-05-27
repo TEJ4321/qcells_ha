@@ -1,0 +1,15 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Qcells Setup",
+                "description": "Enter the IP and password for your Qcells inverter as well as how frequently it should be polled. Please refrain from using too quick of a value here.",
+                "data": {
+                    "ip_address": "IP Address",
+                    "password": "Password",
+                    "update_interval": "Update Interval"
+                }
+            }
+        }
+    }
+}
