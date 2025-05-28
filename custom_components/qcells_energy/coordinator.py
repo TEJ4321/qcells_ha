@@ -2,11 +2,11 @@
 from datetime import timedelta
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+# from homeassistant.helpers.aiohttp_client import async_get_clientsession
+import requests
 # from .const import DOMAIN
 import logging
 import async_timeout
-from aiohttp import FormData
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,44 +20,52 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
         )
         self._ip = ip
         self._password = password
-        self._session = async_get_clientsession(hass, verify_ssl=False)
 
-    async def _async_login(self):
+    def _login(self):
         login_url = f"https://{self._ip}:7000/login"
+        data = f"pswd={self._password}"
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
 
-        form = FormData()
-        form.add_field("pswd", self._password)
+        print(f"Sending login POST to {login_url} with:\nHeaders: {headers}\nData: {data}\n======================================================")
+        
+        session = requests.Session()
 
-        async with async_timeout.timeout(10):
-            async with self._session.post(login_url, data=form) as resp:
-                body = await resp.text()
-
-                if resp.status != 200:
-                    raise UpdateFailed(f"Login failed: {resp.status}, body: {body[:300]}")
-
-                # Check for session cookie
-                session_cookie = None
-                for cookie in self._session.cookie_jar:
-                    _LOGGER.debug("Cookie received: %s=%s", cookie.key, cookie.value)
-                    if "installer_session" in cookie.key:
-                        session_cookie = cookie
-
-                if not session_cookie:
-                    raise UpdateFailed("Login failed: No session cookie received")
-
-                _LOGGER.debug("Login successful")
-
-    async def _async_update_data(self):
         try:
-            await self._async_login()
+            resp = session.post(login_url, data=data, headers=headers, verify=False, timeout=10)
+            # print(f"Login response status: {resp.status_code}\nHeaders: {resp.headers}\nBody: {resp.text}")
+            if resp.status_code != 200:
+                raise UpdateFailed(f"Login failed: {resp.status_code}, body: {resp.text[:300]}")
+            # Check for session cookie
+            session_cookie = None
+            for cookie in session.cookies:
+                # print(f"Cookie received: {cookie.name}={cookie.value}")
+                if "installer_session" in cookie.name:
+                    session_cookie = cookie
+            if not session_cookie:
+                raise UpdateFailed("Login failed: No session cookie received")
+            
+            # print("Login successful")
+            return session
+        
+        except Exception as err:
+            raise UpdateFailed(f"Error during login: {err}")
 
-            status_url = f"https://{self._ip}:7000/system/status/pcssystem"
-            async with async_timeout.timeout(10):
-                async with self._session.get(status_url, headers={"Accept": "application/json"}) as resp:
-                    if resp.status != 200:
-                        raise UpdateFailed(f"Error reading Qcells data: {resp.status}")
-                    data = await resp.json(content_type=None)
-                    return data
-
+    def _get_status(self, session):
+        status_url = f"https://{self._ip}:7000/system/status/pcssystem"
+        try:
+            resp = session.get(status_url, headers={"Accept": "application/json"}, verify=False, timeout=10)
+            if resp.status_code != 200:
+                raise UpdateFailed(f"Error reading Qcells data: {resp.status_code}")
+            return resp.json()
         except Exception as err:
             raise UpdateFailed(f"Error fetching Qcells data: {err}")
+        
+    async def _async_update_data(self):
+        # Run sync code in executor
+        return await self.hass.async_add_executor_job(self._sync_update_data)
+
+    def _sync_update_data(self):
+        session = self._login()
+        return self._get_status(session)
