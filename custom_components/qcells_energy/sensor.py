@@ -2,11 +2,43 @@ from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
 
 SENSOR_TYPES = {
-    "battery_power": ["Battery Power", "W", lambda d: d["ess_all"]["inverter_info"]["bdc"]["power"]],
-    "grid_power": ["Grid Active Power", "W", lambda d: d["meter_info"]["grid_active_power"]],
-    "pv1": ["PV Power 1", "W", lambda d: d["ess_all"]["pv_info"]["power"][0]],
-    "pv2": ["PV Power 2", "W", lambda d: d["ess_all"]["pv_info"]["power"][1]],
-    "soc": ["State of Charge", "%", lambda d: d["current_avg_soc"]],
+    "battery_power": [
+        "Battery Power", "W", "power",
+        lambda d: d["ess_all"]["inverter_info"]["bdc"]["power"]
+    ],
+    "battery_power_charging": [
+        "Battery Power Charging", "W", "power",
+        lambda d: abs(min(d["ess_all"]["inverter_info"]["bdc"]["power"], 0))
+    ],
+    "battery_power_discharging": [
+        "Battery Power Discharging", "W", "power",
+        lambda d: max(d["ess_all"]["inverter_info"]["bdc"]["power"], 0)
+    ],
+    "grid_power": [
+        "Grid Active Power", "W", "power",
+        lambda d: d["meter_info"]["grid_active_power"]
+    ],
+    "current_load": [
+        "Current Load", "W", "power",
+        lambda d: (
+            d["ess_all"]["inverter_info"]["bdc"]["power"]
+            + d["meter_info"]["grid_active_power"]
+            + d["ess_all"]["pv_info"]["power"][0]
+            + d["ess_all"]["pv_info"]["power"][1]
+        )
+    ],
+    "pv1": [
+        "PV Power 1", "W", "power",
+        lambda d: d["ess_all"]["pv_info"]["power"][0]
+    ],
+    "pv2": [
+        "PV Power 2", "W", "power",
+        lambda d: d["ess_all"]["pv_info"]["power"][1]
+    ],
+    "soc": [
+        "State of Charge", "%", "soc",
+        lambda d: d["current_avg_soc"]
+    ],
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -15,14 +47,15 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(sensors)
 
 class QcellsSensor(SensorEntity):
-    def __init__(self, coordinator, entry, key, name, unit, value_fn):
+    def __init__(self, coordinator, entry, key, name, unit, sensor_type, value_fn):
         self._attr_name = f"Qcells {name}"
-        self._attr_unit_of_measurement = unit
+        self._attr_native_unit_of_measurement = unit
+        self._attr_device_class = sensor_type
         self.coordinator = coordinator
         self.value_fn = value_fn
         self._attr_unique_id = f"qcells_{key}"
         self._entry = entry
-        
+
     @property
     def native_value(self) -> float | None: # type: ignore
         try:
@@ -45,5 +78,5 @@ class QcellsSensor(SensorEntity):
             "name": "Qcells Inverter",
             "manufacturer": "Qcells",
             "model": "Q.Home",
-            "configuration_url": f"http://{self._entry.data.get('ip_address')}:7000/",
+            "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
         }
