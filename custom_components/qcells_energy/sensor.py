@@ -194,6 +194,84 @@ SENSOR_TYPES = {
     ],
 }
 
+SENSOR_DEVICE_MAP = {
+    # Battery
+    "battery_power": "battery",
+    "battery_power_charging": "battery",
+    "battery_power_discharging": "battery",
+    "battery_voltage": "battery",
+    "battery_current": "battery",
+    "battery_rack_voltage": "battery",
+    "battery_rack_current": "battery",
+    "battery_avg_cell_temp": "battery",
+    "battery_max_cell_temp": "battery",
+    "battery_min_cell_temp": "battery",
+    "battery_soh": "battery",
+    "battery_charge_cycle_count": "battery",
+    "battery_discharge_cycle_count": "battery",
+    "battery_total_charge_wh": "battery",
+    "battery_total_discharge_wh": "battery",
+    "soc": "battery",
+
+    # PV
+    "pv1": "pv",
+    "pv2": "pv",
+    "pv_total_power": "pv",
+    "pv1_voltage": "pv",
+    "pv2_voltage": "pv",
+    "pv1_current": "pv",
+    "pv2_current": "pv",
+
+    # Grid
+    "grid_power": "grid",
+    "grid_voltage": "grid",
+    "grid_current": "grid",
+    "grid_power_factor": "grid",
+    "grid_frequency": "grid",
+    "grid_reactive_power": "grid",
+
+    # Inverter
+    "inverter_active_power": "inverter",
+    "inverter_apparent_power": "inverter",
+    "inverter_voltage": "inverter",
+    "inverter_current": "inverter",
+    "inverter_frequency": "inverter",
+    "inverter_power_factor": "inverter",
+    "inverter_temperature": "inverter",
+
+    # System/Status/Error/Load
+    "system_temperature": "system",
+    "battery_status_flag": "system",
+    "simulation_mode_enabled": "system",
+    "auto_charge_discharge_enabled": "system",
+    "current_fault_history_size": "system",
+    "current_fault_list": "system",
+    "current_load": "system",
+}
+
+DEVICE_INFO_MAP = {
+    "battery": {
+        "name": "Qcells Battery",
+        "model": "Q.SAVE Battery",
+    },
+    "pv": {
+        "name": "Qcells Solar Array",
+        "model": "Q.Home PV",
+    },
+    "grid": {
+        "name": "Electricity Grid",
+        "model": "N/A",
+    },
+    "inverter": {
+        "name": "Qcells Inverter",
+        "model": "Q.VOLT Inverter",
+    },
+    "system": {
+        "name": "Qcells System",
+        "model": "Q.Home System",
+    },
+}
+
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     sensors = [QcellsSensor(coordinator, entry, key, *val) for key, val in SENSOR_TYPES.items()]
@@ -208,6 +286,7 @@ class QcellsSensor(SensorEntity):
         self.value_fn = value_fn
         self._attr_unique_id = f"qcells_{key}"
         self._entry = entry
+        self._sensor_key = key
 
     @property
     def native_value(self) -> float | None: # type: ignore
@@ -223,13 +302,26 @@ class QcellsSensor(SensorEntity):
     def available(self) -> bool: # type: ignore[override]
         return self.coordinator.last_update_success
     
+    # @property
+    # def device_info(self): # type: ignore
+    #     """Return device information for the Qcells inverter."""
+    #     return {
+    #         "identifiers": {(DOMAIN, self._entry.entry_id)},
+    #         "name": "Qcells Inverter",
+    #         "manufacturer": "Qcells",
+    #         "model": "Q.Home",
+    #         "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
+    #     }
+    
     @property
     def device_info(self): # type: ignore
-        """Return device information for the Qcells inverter."""
+        """Return device information for the Qcells sensor group."""
+        group = SENSOR_DEVICE_MAP.get(self._sensor_key, "system")
+        info = DEVICE_INFO_MAP[group]
         return {
-            "identifiers": {(DOMAIN, self._entry.entry_id)},
-            "name": "Qcells Inverter",
+            "identifiers": {(DOMAIN, f"{self._entry.entry_id}_{group}")},
+            "name": info["name"],
             "manufacturer": "Qcells",
-            "model": "Q.Home",
+            "model": info["model"],
             "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
         }
