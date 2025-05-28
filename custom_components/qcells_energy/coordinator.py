@@ -3,7 +3,7 @@ from datetime import timedelta
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from .const import DOMAIN
+# from .const import DOMAIN
 import logging
 import async_timeout
 from aiohttp import FormData
@@ -28,25 +28,18 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
         form = FormData()
         form.add_field("pswd", self._password)
 
-        headers = {
-            "User-Agent": "PostmanRuntime/7.44.0",
-            "Accept": "*/*",
-            "Content-Type": "application/x-www-form-urlencoded",
-        }
-
         async with async_timeout.timeout(10):
-            async with self._session.post(login_url, data=form, headers=headers) as resp:
+            async with self._session.post(login_url, data=form) as resp:
                 body = await resp.text()
 
-                if resp.status not in (200, 302):
-                    body = await resp.text()
+                if resp.status != 200:
                     raise UpdateFailed(f"Login failed: {resp.status}, body: {body[:300]}")
 
                 # Check for session cookie
                 session_cookie = None
                 for cookie in self._session.cookie_jar:
                     _LOGGER.debug("Cookie received: %s=%s", cookie.key, cookie.value)
-                    if "session" in cookie.key:
+                    if "installer_session" in cookie.key:
                         session_cookie = cookie
 
                 if not session_cookie:
@@ -62,7 +55,7 @@ class QcellsDataUpdateCoordinator(DataUpdateCoordinator):
             async with async_timeout.timeout(10):
                 async with self._session.get(status_url, headers={"Accept": "application/json"}) as resp:
                     if resp.status != 200:
-                        raise UpdateFailed(f"Error fetching Qcells data: {resp.status}")
+                        raise UpdateFailed(f"Error reading Qcells data: {resp.status}")
                     data = await resp.json(content_type=None)
                     return data
 
