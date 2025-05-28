@@ -2,11 +2,12 @@ from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
 
 SENSOR_TYPES = {
+    # Battery
     "battery_power": [
         "Battery Power", "W", "power",
         lambda d: d["ess_all"]["inverter_info"]["bdc"]["power"]
     ],
-    "battery_power_charging": [
+    "battery_power_charging": [ 
         "Battery Power Charging", "W", "power",
         lambda d: abs(min(d["ess_all"]["inverter_info"]["bdc"]["power"], 0))
     ],
@@ -14,19 +15,60 @@ SENSOR_TYPES = {
         "Battery Power Discharging", "W", "power",
         lambda d: max(d["ess_all"]["inverter_info"]["bdc"]["power"], 0)
     ],
-    "grid_power": [
-        "Grid Active Power", "W", "power",
-        lambda d: d["meter_info"]["grid_active_power"]
+    "battery_voltage": [
+        "Battery Voltage", "V", "voltage",
+        lambda d: d["ess_all"]["inverter_info"]["bdc"]["voltage"]
     ],
-    "current_load": [
-        "Current Load", "W", "power",
-        lambda d: (
-            d["ess_all"]["inverter_info"]["bdc"]["power"]
-            + d["meter_info"]["grid_active_power"]
-            + d["ess_all"]["pv_info"]["power"][0]
-            + d["ess_all"]["pv_info"]["power"][1]
-        )
+    "battery_current": [
+        "Battery Current", "A", "current",
+        lambda d: d["ess_all"]["inverter_info"]["bdc"]["current"][0]
     ],
+    "battery_rack_voltage": [
+        "Battery Rack Voltage", "V", "voltage",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["rack_voltage"]
+    ],
+    "battery_rack_current": [
+        "Battery Rack Current", "A", "current",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["rack_current"]
+    ],
+    "battery_avg_cell_temp": [
+        "Battery Avg Cell Temperature", "°C", "temperature",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["avg_cell_temperature"]
+    ],
+    "battery_max_cell_temp": [
+        "Battery Max Cell Temperature", "°C", "temperature",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["max_cell_temperature"]
+    ],
+    "battery_min_cell_temp": [
+        "Battery Min Cell Temperature", "°C", "temperature",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["min_cell_temperature"]
+    ],
+    "battery_soh": [
+        "Battery State of Health", "%", "battery",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["soh"]
+    ],
+    "battery_charge_cycle_count": [
+        "Battery Charge Cycle Count", "", "none",
+        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["charge_cycle_count"]
+    ],
+    "battery_discharge_cycle_count": [
+        "Battery Discharge Cycle Count", "", "none",
+        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["discharge_cycle_count"]
+    ],
+    "battery_total_charge_wh": [
+        "Battery Total Charge (Wh)", "Wh", "energy",
+        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_charge_amount_wh"]
+    ],
+    "battery_total_discharge_wh": [
+        "Battery Total Discharge (Wh)", "Wh", "energy",
+        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_discharge_amount_wh"]
+    ],
+    "soc": [
+        "State of Charge", "%", "battery",
+        lambda d: d["current_avg_soc"]
+    ],
+
+    # PV
     "pv1": [
         "PV Power 1", "W", "power",
         lambda d: d["ess_all"]["pv_info"]["power"][0]
@@ -35,9 +77,120 @@ SENSOR_TYPES = {
         "PV Power 2", "W", "power",
         lambda d: d["ess_all"]["pv_info"]["power"][1]
     ],
-    "soc": [
-        "State of Charge", "%", "battery",
-        lambda d: d["current_avg_soc"]
+    "pv_total_power": [
+        "PV Total Power", "W", "power",
+        lambda d: d["ess_all"]["pv_info"]["total_power"]
+    ],
+    "pv1_voltage": [
+        "PV1 Voltage", "V", "voltage",
+        lambda d: d["ess_all"]["pv_info"]["voltage"][0]
+    ],
+    "pv2_voltage": [
+        "PV2 Voltage", "V", "voltage",
+        lambda d: d["ess_all"]["pv_info"]["voltage"][1]
+    ],
+    "pv1_current": [
+        "PV1 Current", "A", "current",
+        lambda d: d["ess_all"]["pv_info"]["current"][0]
+    ],
+    "pv2_current": [
+        "PV2 Current", "A", "current",
+        lambda d: d["ess_all"]["pv_info"]["current"][1]
+    ],
+
+    # Grid
+    "grid_power": [
+        "Grid Active Power", "W", "power",
+        lambda d: d["meter_info"]["grid_active_power"]
+    ],
+    "grid_voltage": [
+        "Grid Voltage", "V", "voltage",
+        lambda d: d["meter_info"]["grid_voltage"]
+    ],
+    "grid_current": [
+        "Grid Current", "A", "current",
+        lambda d: d["meter_info"]["grid_current"]
+    ],
+    "grid_power_factor": [
+        "Grid Power Factor", "", "power_factor",
+        lambda d: d["meter_info"]["grid_power_factor"]
+    ],
+    "grid_frequency": [
+        "Grid Frequency", "Hz", "frequency",
+        lambda d: d["meter_info"]["grid_hz"]
+    ],
+    "grid_reactive_power": [
+        "Grid Reactive Power", "var", "reactive_power",
+        lambda d: d["meter_info"]["grid_reactive_power"]
+    ],
+
+    # Inverter
+    "inverter_active_power": [
+        "Inverter Active Power", "W", "power",
+        lambda d: d["ess_all"]["inverter_info"]["inv"]["active_power"]
+    ],
+    "inverter_apparent_power": [
+        "Inverter Apparent Power", "VA", "apparent_power",
+        lambda d: d["ess_all"]["inverter_info"]["inv"]["apparent_power"]
+    ],
+    "inverter_voltage": [
+        "Inverter Voltage", "V", "voltage",
+        lambda d: d["ess_all"]["inverter_info"]["inv"]["voltage"]
+    ],
+    "inverter_current": [
+        "Inverter Current", "A", "current",
+        lambda d: d["ess_all"]["inverter_info"]["inv"]["current"]
+    ],
+    "inverter_frequency": [
+        "Inverter Frequency", "Hz", "frequency",
+        lambda d: d["ess_all"]["inverter_info"]["inv"]["frequency"]
+    ],
+    "inverter_power_factor": [
+        "Inverter Power Factor", "", "power_factor",
+        lambda d: d["ess_all"]["inverter_info"]["inv"]["power_factor"]
+    ],
+    "inverter_temperature": [
+        "Inverter Temperature", "°C", "temperature",
+        lambda d: d["ess_all"]["inverter_info"]["temperature"]["inverter"]
+    ],
+
+    # System/Status
+    "system_temperature": [
+        "System Temperature", "°C", "temperature",
+        lambda d: d["ess_all"]["inverter_info"]["temperature"]["system"]
+    ],
+    "battery_status_flag": [
+        "Battery Status Flag", "", "none",
+        lambda d: d["ess_all"]["bat_info"]["bat_rack_info"][0]["battery_status_flag"]
+    ],
+    "simulation_mode_enabled": [
+        "Simulation Mode Enabled", "", "none",
+        lambda d: d["simulation_mode"]["simulation_enable_flag"]
+    ],
+    "auto_charge_discharge_enabled": [
+        "Auto Charge/Discharge Enabled", "", "none",
+        lambda d: d["simulation_mode"]["auto_charge_discharge_enable_flag"]
+    ],
+
+    # Error/Alarm
+    "current_fault_history_size": [
+        "Current Fault History Size", "", "none",
+        lambda d: d["error_history"]["currentFaultHistorySize"]
+    ],
+    "current_fault_list": [
+        "Current Fault List", "", "none",
+        lambda d: ", ".join(d["error_history"]["currentFaultHistory"]["ems_fault_list"])
+    ],
+
+    # Load
+    "current_load": [
+        "Current Load", "W", "power",
+        lambda d: (
+            d["ess_all"]["inverter_info"]["bdc"]["power"]
+            + d["meter_info"]["grid_active_power"]
+            + d["ess_all"]["pv_info"]["power"][0]
+            + d["ess_all"]["pv_info"]["power"][1]
+        )
     ],
 }
 
