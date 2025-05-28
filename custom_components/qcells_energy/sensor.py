@@ -36,7 +36,7 @@ SENSOR_TYPES = {
         lambda d: d["ess_all"]["pv_info"]["power"][1]
     ],
     "soc": [
-        "State of Charge", "%", "soc",
+        "State of Charge", "%", "battery",
         lambda d: d["current_avg_soc"]
     ],
 }
