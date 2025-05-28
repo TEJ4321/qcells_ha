@@ -329,10 +329,7 @@ class QcellsSensor(SensorEntity):
         await self.coordinator.async_request_refresh()
         try:
             value = self.value_fn(self.coordinator.data)
-            if isinstance(value, float):
-                self._attr_native_value = round(value, rounding_amount)
-            else:
-                self._attr_native_value = value
+            self._attr_native_value = value
         except Exception:
             self._attr_native_value = None
         self._attr_available = self.coordinator.last_update_success
@@ -383,7 +380,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
     async def async_update(self):
         # Called by HA to update the sensor
         await self.async_calculate_energy()
-        self._attr_native_value = round(self._energy, rounding_amount)
+        self._attr_native_value = self._energy
 
     async def async_calculate_energy(self):
         """Calculate energy based on power sensor data."""
