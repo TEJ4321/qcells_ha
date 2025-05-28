@@ -353,7 +353,11 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
     async def async_added_to_hass(self):
         last_state = await self.async_get_last_state()
         if last_state is not None and last_state.state not in (None, "unknown", "unavailable"):
-            self._last_update = self.coordinator.data.get("timestamp") or dt_util.utcnow()
+            try:
+                self._energy = float(last_state.state)
+            except ValueError:
+                self._energy = 0.0
+        self._last_update = dt_util.utcnow()
 
     async def async_update(self):
         # Called by HA to update the sensor
@@ -369,12 +373,16 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         power_value = self.coordinator.data.get(self._power_sensor_key)
 
         if power_value is None or self._last_update is None:
+            self._last_update = current_time
             return
 
         # Calculate time difference in seconds
         time_diff = (current_time - self._last_update).total_seconds()
         if time_diff <= 0:
+            self._last_update = current_time
             return
 
         # Convert power to kW and calculate energy in Wh
-        energy_delta = (power_value / 1000) * time_diff
+        energy_delta = (power_value / 1000) * (time_diff / 3600)  # Wh
+        self._energy += energy_delta
+        self._last_update = current_time
