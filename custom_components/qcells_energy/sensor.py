@@ -330,6 +330,10 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
     def __init__(self, coordinator, entry, power_sensor_key, name, device_group):
         self.coordinator = coordinator
         self._entry = entry
+        # Remove "Power" from the name if present, and remove trailing whitespace
+        if "Power" in name:
+            name = name.replace("Power", "Energy").strip()
+        self._attr_name = f"Qcells {name}"
         self._power_sensor_key = power_sensor_key
         self._attr_name = name
         self._attr_unique_id = f"qcells_{power_sensor_key}_virtual_energy"
@@ -339,6 +343,9 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         self._last_update = None
         self._energy = 0.0
         self._device_group = device_group
+
+        # Use the value function from SENSOR_TYPES
+        self._value_fn = SENSOR_TYPES[power_sensor_key][3]
 
         group = self._device_group
         info = DEVICE_INFO_MAP[group]
@@ -370,7 +377,12 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
             return
 
         current_time = dt_util.utcnow()
-        power_value = self.coordinator.data.get(self._power_sensor_key)
+        try:
+            power_value = self._value_fn(self.coordinator.data)
+        except Exception:
+            power_value = None
+
+        # power_value = self.coordinator.data.get(self._power_sensor_key)
 
         if power_value is None or self._last_update is None:
             self._last_update = current_time
