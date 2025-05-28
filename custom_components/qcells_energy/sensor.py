@@ -11,17 +11,18 @@ SENSOR_TYPES = {
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    sensors = [QcellsSensor(coordinator, key, *val) for key, val in SENSOR_TYPES.items()]
+    sensors = [QcellsSensor(coordinator, entry, key, *val) for key, val in SENSOR_TYPES.items()]
     async_add_entities(sensors)
 
 class QcellsSensor(SensorEntity):
-    def __init__(self, coordinator, key, name, unit, value_fn):
+    def __init__(self, coordinator, entry, key, name, unit, value_fn):
         self._attr_name = f"Qcells {name}"
         self._attr_unit_of_measurement = unit
         self.coordinator = coordinator
         self.value_fn = value_fn
         self._attr_unique_id = f"qcells_{key}"
-
+        self._entry = entry
+        
     @property
     def native_value(self) -> float | None: # type: ignore
         try:
@@ -35,3 +36,14 @@ class QcellsSensor(SensorEntity):
     @property
     def available(self) -> bool: # type: ignore[override]
         return self.coordinator.last_update_success
+    
+    @property
+    def device_info(self): # type: ignore
+        """Return device information for the Qcells inverter."""
+        return {
+            "identifiers": {(DOMAIN, self._entry.entry_id)},
+            "name": "Qcells Inverter",
+            "manufacturer": "Qcells",
+            "model": "Q.Home",
+            "configuration_url": f"http://{self._entry.data.get('ip_address')}:7000/",
+        }
