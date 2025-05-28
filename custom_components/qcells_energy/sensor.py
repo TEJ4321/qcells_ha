@@ -1,5 +1,8 @@
 from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
+from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.util import dt as dt_util
 
 SENSOR_TYPES = {
     # Battery
@@ -274,8 +277,23 @@ DEVICE_INFO_MAP = {
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
+    
+    # Main sensors
     sensors = [QcellsSensor(coordinator, entry, key, *val) for key, val in SENSOR_TYPES.items()]
     async_add_entities(sensors)
+
+    # Virtual energy sensors
+    virtual_sensors = []
+    # Add virtual energy sensors for all power sensors
+    for key, val in SENSOR_TYPES.items():
+        name, unit, sensor_type, _ = val
+        if unit == "W":  # Only for power sensors
+            group = SENSOR_DEVICE_MAP.get(key, "system")
+            sensor_name = f"Qcells {name} Energy"
+            virtual_sensors.append(QcellsVirtualEnergySensor(coordinator, entry, key, sensor_name, group))
+
+    async_add_entities(virtual_sensors)
+
 
 class QcellsSensor(SensorEntity):
     def __init__(self, coordinator, entry, key, name, unit, sensor_type, value_fn):
@@ -288,40 +306,75 @@ class QcellsSensor(SensorEntity):
         self._entry = entry
         self._sensor_key = key
 
-    @property
-    def native_value(self) -> float | None: # type: ignore
-        try:
-            return self.value_fn(self.coordinator.data)
-        except Exception:
-            return None
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
-
-    @property
-    def available(self) -> bool: # type: ignore[override]
-        return self.coordinator.last_update_success
-    
-    # @property
-    # def device_info(self): # type: ignore
-    #     """Return device information for the Qcells inverter."""
-    #     return {
-    #         "identifiers": {(DOMAIN, self._entry.entry_id)},
-    #         "name": "Qcells Inverter",
-    #         "manufacturer": "Qcells",
-    #         "model": "Q.Home",
-    #         "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
-    #     }
-    
-    @property
-    def device_info(self): # type: ignore
-        """Return device information for the Qcells sensor group."""
         group = SENSOR_DEVICE_MAP.get(self._sensor_key, "system")
         info = DEVICE_INFO_MAP[group]
-        return {
+        self._attr_device_info = {
             "identifiers": {(DOMAIN, f"{self._entry.entry_id}_{group}")},
             "name": info["name"],
             "manufacturer": "Qcells",
             "model": info["model"],
             "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
         }
+
+    async def async_update(self):
+        await self.coordinator.async_request_refresh()
+        try:
+            self._attr_native_value = self.value_fn(self.coordinator.data)
+        except Exception:
+            self._attr_native_value = None
+        self._attr_available = self.coordinator.last_update_success
+
+class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
+    """Virtual energy sensor that integrates power over time."""
+
+    def __init__(self, coordinator, entry, power_sensor_key, name, device_group):
+        self.coordinator = coordinator
+        self._entry = entry
+        self._power_sensor_key = power_sensor_key
+        self._attr_name = name
+        self._attr_unique_id = f"qcells_{power_sensor_key}_virtual_energy"
+        self._attr_native_unit_of_measurement = "Wh"
+        self._attr_device_class = SensorDeviceClass.ENERGY
+        self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        self._last_update = None
+        self._energy = 0.0
+        self._device_group = device_group
+
+        group = self._device_group
+        info = DEVICE_INFO_MAP[group]
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, f"{self._entry.entry_id}_{group}")},
+            "name": info["name"],
+            "manufacturer": "Qcells",
+            "model": info["model"],
+            "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
+        }
+
+    async def async_added_to_hass(self):
+        last_state = await self.async_get_last_state()
+        if last_state is not None and last_state.state not in (None, "unknown", "unavailable"):
+            self._last_update = self.coordinator.data.get("timestamp") or dt_util.utcnow()
+
+    async def async_update(self):
+        # Called by HA to update the sensor
+        await self.async_calculate_energy()
+        self._attr_native_value = round(self._energy, 2)
+
+    async def async_calculate_energy(self):
+        """Calculate energy based on power sensor data."""
+        if not self.coordinator.data or not self.coordinator.last_update_success:
+            return
+
+        current_time = dt_util.utcnow()
+        power_value = self.coordinator.data.get(self._power_sensor_key)
+
+        if power_value is None or self._last_update is None:
+            return
+
+        # Calculate time difference in seconds
+        time_diff = (current_time - self._last_update).total_seconds()
+        if time_diff <= 0:
+            return
+
+        # Convert power to kW and calculate energy in Wh
+        energy_delta = (power_value / 1000) * time_diff
