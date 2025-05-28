@@ -357,7 +357,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         self._power_sensor_key = power_sensor_key
         self._attr_name = name
         self._attr_unique_id = f"qcells_{power_sensor_key}_virtual_energy"
-        self._attr_native_unit_of_measurement = "Wh"
+        self._attr_native_unit_of_measurement = "kWh"
         self._attr_device_class = SensorDeviceClass.ENERGY
         self._attr_state_class = SensorStateClass.TOTAL_INCREASING
         self._last_update = None
