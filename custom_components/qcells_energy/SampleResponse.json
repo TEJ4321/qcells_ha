@@ -1,0 +1,801 @@
+{
+  "error_code": 0,
+  "from": 16,
+  "payload": {
+    "ess_system_status": [193, 60, 0, 23, 17, 195, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  "sub_cmd": 1291,
+  "pcs_system_status": {
+    "ess_system_status": [193, 60, 0, 23, 17, 195, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  "simulation_mode": {
+    "auto_charge_discharge_enable_flag": 0,
+    "debug_mode_enable_flag": 0,
+    "force_charge_discharge_enable_flag": 0,
+    "simulation_enable_flag": 0
+  },
+  "error_history": {
+    "currentFaultHistory": {
+      "ems_fault_list": [
+        "",
+        "[E18W]",
+        "",
+        "[E18W]",
+        ""
+      ],
+      "ext_ess_fault_list": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pcs_fault_list": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "timestamp": [
+        "2025-05-28 14:44:53 +1000",
+        "2025-05-28 17:38:33 +1000",
+        "2025-05-28 17:38:34 +1000",
+        "2025-05-28 18:19:33 +1000",
+        "2025-05-28 18:19:34 +1000"
+      ]
+    },
+    "currentFaultHistorySize": 5
+  },
+  "nvm": {
+    "battery_user_soc_max": 100,
+    "battery_user_soc_min": 5,
+    "installed_PV_count": 2,
+    "installed_rack_count": 1,
+    "pv_connection_type": 2
+  },
+  "ess_all": {
+    "bat_info": {
+      "bat_cell_info": [
+        [
+          {
+            "cell_info": 1,
+            "cell_temperature": [16, 16, 0, 0],
+            "cell_voltage": [3.7960000038147, 3.79699993133545, 3.79699993133545, 3.79800009727478, 3.79699993133545, 3.79699993133545, 3.79699993133545, 3.7960000038147, 3.79699993133545, 3.79800009727478, 3.79699993133545, 3.79699993133545, 3.79699993133545, 3.79699993133545, 3.79200005531311, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79200005531311, 3.79200005531311, 3.79299998283386, 3.79299998283386, 3.79099988937378],
+            "parallel_info": 9
+          },
+          {
+            "cell_info": 1,
+            "cell_temperature": [18, 17, 0, 0],
+            "cell_voltage": [3.79099988937378, 3.79200005531311, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79299998283386, 3.79200005531311, 3.79299998283386, 3.79299998283386, 3.79200005531311, 3.79200005531311, 3.79200005531311, 3.80599999427795, 3.80599999427795, 3.80599999427795, 3.80599999427795, 3.80599999427795, 3.8050000667572, 3.80599999427795, 3.80599999427795, 3.80599999427795, 3.80599999427795, 3.80599999427795, 3.8050000667572, 3.80599999427795, 3.8050000667572],
+            "parallel_info": 9
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          }
+        ],
+        [
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          }
+        ],
+        [
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          }
+        ],
+        [
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          },
+          {
+            "cell_info": 0,
+            "cell_temperature": [0, 0, 0, 0],
+            "cell_voltage": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            "parallel_info": 0
+          }
+        ]
+      ],
+      "bat_ch_power_limit": -3584,
+      "bat_disch_power_limit": 4217,
+      "bat_history_info": [
+        {
+          "charge_cycle_count": 39691197,
+          "discharge_cycle_count": 95145119,
+          "fcc": 30.2019996643066,
+          "max_charge_c_rate": 0.5,
+          "max_charge_power": 3730,
+          "max_discharge_c_rate": 0.600000023841858,
+          "max_discharge_power": 4407,
+          "no_current_time": 4835,
+          "oper_cycle_count": 205740234,
+          "total_additional_protection_count": 0,
+          "total_alarm_count": 66,
+          "total_charge_amount_ah": 14226.562,
+          "total_charge_amount_wh": 3009760.512,
+          "total_discharge_amount_ah": 14146.292,
+          "total_discharge_amount_wh": 2896741.936,
+          "total_major_protection_count": 0,
+          "total_minor_protection_count": 28
+        },
+        {
+          "charge_cycle_count": 0,
+          "discharge_cycle_count": 0,
+          "fcc": 0,
+          "max_charge_c_rate": 0,
+          "max_charge_power": 0,
+          "max_discharge_c_rate": 0,
+          "max_discharge_power": 0,
+          "no_current_time": 0,
+          "oper_cycle_count": 0,
+          "total_additional_protection_count": 0,
+          "total_alarm_count": 0,
+          "total_charge_amount_ah": 0,
+          "total_charge_amount_wh": 0,
+          "total_discharge_amount_ah": 0,
+          "total_discharge_amount_wh": 0,
+          "total_major_protection_count": 0,
+          "total_minor_protection_count": 0
+        },
+        {
+          "charge_cycle_count": 0,
+          "discharge_cycle_count": 0,
+          "fcc": 0,
+          "max_charge_c_rate": 0,
+          "max_charge_power": 0,
+          "max_discharge_c_rate": 0,
+          "max_discharge_power": 0,
+          "no_current_time": 0,
+          "oper_cycle_count": 0,
+          "total_additional_protection_count": 0,
+          "total_alarm_count": 0,
+          "total_charge_amount_ah": 0,
+          "total_charge_amount_wh": 0,
+          "total_discharge_amount_ah": 0,
+          "total_discharge_amount_wh": 0,
+          "total_major_protection_count": 0,
+          "total_minor_protection_count": 0
+        },
+        {
+          "charge_cycle_count": 0,
+          "discharge_cycle_count": 0,
+          "fcc": 0,
+          "max_charge_c_rate": 0,
+          "max_charge_power": 0,
+          "max_discharge_c_rate": 0,
+          "max_discharge_power": 0,
+          "no_current_time": 0,
+          "oper_cycle_count": 0,
+          "total_additional_protection_count": 0,
+          "total_alarm_count": 0,
+          "total_charge_amount_ah": 0,
+          "total_charge_amount_wh": 0,
+          "total_discharge_amount_ah": 0,
+          "total_discharge_amount_wh": 0,
+          "total_major_protection_count": 0,
+          "total_minor_protection_count": 0
+        }
+      ],
+      "bat_rack_info": [
+        {
+          "alarm_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "avg_cell_temperature": 17,
+          "avg_cell_voltage": 3.7960000038147,
+          "balancing_now": 0,
+          "battery_status_flag": 2,
+          "ch_current_oper_limit": 16.8999996185303,
+          "disch_current_oper_limit": 20,
+          "heart_beat": 150,
+          "major_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "max_cell_temperature": 18,
+          "max_cell_temperature_cell_id": 0,
+          "max_cell_voltage": 3.80599999427795,
+          "max_cell_voltage_cell_id": 13,
+          "max_cell_voltage_module_id": 3,
+          "min_cell_temperature": 16,
+          "min_cell_temperature_cell_id": 0,
+          "min_cell_temperature_module_id": 0,
+          "min_cell_voltage": 3.79099988937378,
+          "min_cell_voltage_cell_id": 13,
+          "min_cell_voltage_module_id": 1,
+          "minor_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "module_number": 2,
+          "rack_avg_current": -1.13300001621246,
+          "rack_current": -1.13699996471405,
+          "rack_voltage": 212.026000976563,
+          "renesas_error_code": 0,
+          "soc": 66.9000015258789,
+          "soh": 89.3000030517578,
+          "soh_updated_day": 16,
+          "soh_updated_hours": 23,
+          "soh_updated_minutes": 11,
+          "soh_updated_month": 3,
+          "soh_updated_seconds": 30,
+          "soh_updated_year": 25
+        },
+        {
+          "alarm_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "avg_cell_temperature": 0,
+          "avg_cell_voltage": 0,
+          "balancing_now": 0,
+          "battery_status_flag": 0,
+          "ch_current_oper_limit": 0,
+          "disch_current_oper_limit": 0,
+          "heart_beat": 0,
+          "major_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "max_cell_temperature": 0,
+          "max_cell_temperature_cell_id": 0,
+          "max_cell_voltage": 0,
+          "max_cell_voltage_cell_id": 0,
+          "max_cell_voltage_module_id": 0,
+          "min_cell_temperature": 0,
+          "min_cell_temperature_cell_id": 0,
+          "min_cell_temperature_module_id": 0,
+          "min_cell_voltage": 0,
+          "min_cell_voltage_cell_id": 0,
+          "min_cell_voltage_module_id": 0,
+          "minor_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "module_number": 0,
+          "rack_avg_current": 0,
+          "rack_current": 0,
+          "rack_voltage": 0,
+          "renesas_error_code": 0,
+          "soc": 0,
+          "soh": 0,
+          "soh_updated_day": 0,
+          "soh_updated_hours": 0,
+          "soh_updated_minutes": 0,
+          "soh_updated_month": 0,
+          "soh_updated_seconds": 0,
+          "soh_updated_year": 0
+        },
+        {
+          "alarm_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "avg_cell_temperature": 0,
+          "avg_cell_voltage": 0,
+          "balancing_now": 0,
+          "battery_status_flag": 0,
+          "ch_current_oper_limit": 0,
+          "disch_current_oper_limit": 0,
+          "heart_beat": 0,
+          "major_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "max_cell_temperature": 0,
+          "max_cell_temperature_cell_id": 0,
+          "max_cell_voltage": 0,
+          "max_cell_voltage_cell_id": 0,
+          "max_cell_voltage_module_id": 0,
+          "min_cell_temperature": 0,
+          "min_cell_temperature_cell_id": 0,
+          "min_cell_temperature_module_id": 0,
+          "min_cell_voltage": 0,
+          "min_cell_voltage_cell_id": 0,
+          "min_cell_voltage_module_id": 0,
+          "minor_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "module_number": 0,
+          "rack_avg_current": 0,
+          "rack_current": 0,
+          "rack_voltage": 0,
+          "renesas_error_code": 0,
+          "soc": 0,
+          "soh": 0,
+          "soh_updated_day": 0,
+          "soh_updated_hours": 0,
+          "soh_updated_minutes": 0,
+          "soh_updated_month": 0,
+          "soh_updated_seconds": 0,
+          "soh_updated_year": 0
+        },
+        {
+          "alarm_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "avg_cell_temperature": 0,
+          "avg_cell_voltage": 0,
+          "balancing_now": 0,
+          "battery_status_flag": 0,
+          "ch_current_oper_limit": 0,
+          "disch_current_oper_limit": 0,
+          "heart_beat": 0,
+          "major_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "max_cell_temperature": 0,
+          "max_cell_temperature_cell_id": 0,
+          "max_cell_voltage": 0,
+          "max_cell_voltage_cell_id": 0,
+          "max_cell_voltage_module_id": 0,
+          "min_cell_temperature": 0,
+          "min_cell_temperature_cell_id": 0,
+          "min_cell_temperature_module_id": 0,
+          "min_cell_voltage": 0,
+          "min_cell_voltage_cell_id": 0,
+          "min_cell_voltage_module_id": 0,
+          "minor_protection_flag": [0, 0, 0, 0, 0, 0, 0, 0],
+          "module_number": 0,
+          "rack_avg_current": 0,
+          "rack_current": 0,
+          "rack_voltage": 0,
+          "renesas_error_code": 0,
+          "soc": 0,
+          "soh": 0,
+          "soh_updated_day": 0,
+          "soh_updated_hours": 0,
+          "soh_updated_minutes": 0,
+          "soh_updated_month": 0,
+          "soh_updated_seconds": 0,
+          "soh_updated_year": 0
+        }
+      ]
+    },
+    "control_info": {
+      "bat_target_power": 216,
+      "inv_target_power": 214,
+      "pv_power_limit": 0,
+      "pw_control_point": 0
+    },
+    "ess_external_ct2_data": {
+      "active_power": [0, 0, 0, 0],
+      "apparent_power": [0, 0, 0, 0],
+      "current": [0, 0, 0, 0],
+      "current_dc_offset": [0, 0, 0, 0],
+      "current_dc_offset_slave": [0, 0, 0, 0],
+      "current_slave": [0, 0, 0, 0],
+      "power_factor": [0, 0, 0, 0],
+      "reactive_power": [0, 0, 0, 0]
+    },
+    "ess_external_ct_data": {
+      "active_power": [0, 0, 0, 0],
+      "apparent_power": [11, 0, 0, 0],
+      "current": [0.0599999986588955, 0, 0, 0],
+      "current_dc_offset": [18, 0, 0, 0],
+      "current_dc_offset_slave": [0, 0, 0, 0],
+      "current_slave": [0, 0, 0, 0],
+      "power_factor": [-0.0410000011324883, 0, 0, 0],
+      "reactive_power": [0, 0, 0, 0]
+    },
+    "inverter_info": {
+      "bdc": {
+        "battery_voltage": 0,
+        "current": [0.529999971389771, 0.529999971389771],
+        "current_ref": 0.939999997615814,
+        "power": 227,
+        "power_ref": 200,
+        "voltage": 212
+      },
+      "bdc_slave": {
+        "battery_voltage": 0,
+        "current": [0, 0],
+        "current_ref": 0,
+        "power": 0,
+        "power_ref": 0,
+        "voltage": 0
+      },
+      "bms": {
+        "operating_battery_count": 1,
+        "operating_battery_id": [1, 0, 0, 0],
+        "operating_battery_type": [80, 0, 0, 0],
+        "setting_status": 1
+      },
+      "bms_amount": {
+        "total_ch_current_limit": -16.8999996185303,
+        "total_disch_current_limit": 19.8899993896484,
+        "total_max_cell_temperature": 18,
+        "total_max_cell_voltage": 3.80599999427795,
+        "total_max_rack_voltage": 212,
+        "total_max_soc": 66.9000015258789,
+        "total_min_cell_temperature": 16,
+        "total_min_cell_voltage": 3.79099988937378,
+        "total_min_rack_voltage": 212,
+        "total_min_soc": 66.9000015258789,
+        "total_rack_current": -1.12999999523163
+      },
+      "drm": {
+        "command": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "enable": 78
+      },
+      "hub": {
+        "modified_soc": 0,
+        "pcs1_export_limit": 0,
+        "pcs1_import_limit": 0,
+        "total_inv_app_pwr": 0,
+        "total_inv_react_pwr": 0
+      },
+      "install": {
+        "derated": 0,
+        "dyn_react_curr": 0,
+        "fixed_pf": 0,
+        "fixed_var": 0,
+        "fixed_w": 0,
+        "freq_watt": 0,
+        "hfrt": 0,
+        "hvrt": 0,
+        "lfrt": 0,
+        "lvrt": 0,
+        "max_w": 0,
+        "volt_var": 0,
+        "volt_watt": 0,
+        "watt_var": 0
+      },
+      "inv": {
+        "active_power": 163,
+        "apparent_power": 196,
+        "current": 0.810000002384186,
+        "current_dc_offset": 13,
+        "frequency": 49.9819984436035,
+        "grid_current_dc_offset": 30,
+        "grid_voltage_dc_offset": 77,
+        "load_current_dc_offset": 0,
+        "load_voltage_dc_offset": 90,
+        "power_factor": 0.827000021934509,
+        "rcmu_current": 90,
+        "rcmu_current_dc_offset": 0,
+        "reactive_power": 110,
+        "voltage": 242.050003051758,
+        "voltage_dc_offset": -17
+      },
+      "inv_3p": {
+        "active_power": [163, 0, 0, 0],
+        "apparent_power": [196, 0, 0, 0],
+        "current": [0.810000002384186, 0, 0, 0],
+        "current_dc_offset": [13, 0, 0, 0],
+        "frequency": [49.9819984436035, 0, 0, 0],
+        "grid_current_dc_offset": [30, 0, 0, 0],
+        "grid_voltage_dc_offset": [77, 0, 0, 0],
+        "load_current_dc_offset": [0, 0, 0, 0],
+        "load_voltage_dc_offset": [90, 0, 0, 0],
+        "power_factor": [0.827000021934509, 0, 0, 0],
+        "rcmu_current": [90, 0, 0, 0],
+        "rcmu_current_dc_offset": [0, 0, 0, 0],
+        "reactive_power": [110, 0, 0, 0],
+        "voltage": [242.050003051758, 0, 0, 0],
+        "voltage_dc_offset": [-17, 0, 0, 0]
+      },
+      "operation": {
+        "bdc": 2,
+        "inv": 1,
+        "pcs_operation": [1, 1, 3, 1, 0],
+        "pcs_status": 3,
+        "pv": [0, 0, 0]
+      },
+      "pcs_grid": {
+        "active_power": 181,
+        "apparent_power": 392,
+        "current": 1.62000000476837,
+        "frequency": 49.9830017089844,
+        "power_factor": 0.460999995470047,
+        "reactive_power": 348,
+        "voltage": 242.229995727539,
+        "voltage_10min": 242
+      },
+      "pcs_grid_3p": {
+        "active_power": [181, 0, 0, 0],
+        "apparent_power": [392, 0, 0, 0],
+        "current": [1.62000000476837, 0, 0, 0],
+        "frequency": [49.9830017089844, 0, 0, 0],
+        "power_factor": [0.460999995470047, 0, 0, 0],
+        "reactive_power": [348, 0, 0, 0],
+        "voltage": [242.229995727539, 0, 0, 0],
+        "voltage_10min": [242, 0, 0, 0]
+      },
+      "pcs_slave": {
+        "current_dc_offset": 2,
+        "dc_link_voltage": 419.799987792969,
+        "grid_current": 1.67999994754791,
+        "grid_current_dc_offset": 43,
+        "grid_voltage": 242.199996948242,
+        "grid_voltage_dc_offset": 77,
+        "inv_current": 0.889999985694885,
+        "inv_voltage": 242,
+        "load_current": 1.5,
+        "load_current_dc_offset": 0,
+        "load_voltage": 242.5,
+        "load_voltage_dc_offset": 12,
+        "rcmu_current": 90,
+        "rcmu_current_dc_offset": 95,
+        "voltage_10min": 242,
+        "voltage_dc_offset": -24
+      },
+      "pcs_slave_3p": {
+        "current_dc_offset": [2, 0, 0, 0],
+        "dc_link_voltage": [0, 0, 0, 0],
+        "grid_current": [1.67999994754791, 0, 0, 0],
+        "grid_current_dc_offset": [43, 0, 0, 0],
+        "grid_voltage": [242.199996948242, 0, 0, 0],
+        "grid_voltage_dc_offset": [77, 0, 0, 0],
+        "inv_current": [0.889999985694885, 0, 0, 0],
+        "inv_voltage": [242, 0, 0, 0],
+        "load_current": [1.5, 0, 0, 0],
+        "load_current_dc_offset": [0, 0, 0, 0],
+        "load_voltage": [242.5, 0, 0, 0],
+        "load_voltage_dc_offset": [12, 0, 0, 0],
+        "rcmu_current": [90, 0, 0, 0],
+        "rcmu_current_dc_offset": [95, 0, 0, 0],
+        "voltage_10min": [242, 0, 0, 0],
+        "voltage_dc_offset": [-24, 0, 0, 0]
+      },
+      "pcs_sub_load": {
+        "active_power": 0,
+        "apparent_power": 364,
+        "current": 1.5,
+        "frequency": 49.9830017089844,
+        "power_factor": -0.0480000004172325,
+        "reactive_power": 364,
+        "voltage": 242.5
+      },
+      "pcs_sub_load_3p": {
+        "active_power": [-17, 0, 0, 0],
+        "apparent_power": [364, 0, 0, 0],
+        "current": [1.5, 0, 0, 0],
+        "frequency": [49.9830017089844, 0, 0, 0],
+        "power_factor": [-0.0480000004172325, 0, 0, 0],
+        "reactive_power": [364, 0, 0, 0],
+        "voltage": [242.5, 0, 0, 0]
+      },
+      "temperature": {
+        "bdc": 24.2999992370605,
+        "inverter": 23,
+        "pv": 22.7000007629395,
+        "system": 31.7000007629395
+      },
+      "temperature_3p": {
+        "bdc": [24.2999992370605, 0, 0],
+        "inverter": [23, 0, 0],
+        "pv": [22.7000007629395, 0, 0],
+        "system": [31.7000007629395, 0, 0]
+      }
+    },
+    "pcs_command": {
+      "mode": 1,
+      "mode_sub": 0
+    },
+    "power_status_gridcode": {
+      "export_power_limit": 4986,
+      "import_power_limit": -4986,
+      "target_active_power": 0
+    },
+    "pv_info": {
+      "current": [0.0299999993294477, 0.0799999982118607, 0],
+      "current_slave": [0, 0, 0],
+      "dc_link_voltage": 420,
+      "dc_link_voltage_ref": 420,
+      "ext_pv_power": 0,
+      "insulation": [0, 0, 0],
+      "insulation_com": 2355.5,
+      "mppt_voltage": [3.40000009536743, 2.90000009536743, 0],
+      "power": [0, 0, 0],
+      "power_slave": [0, 0, 0],
+      "total_power": 0,
+      "voltage": [3.40000009536743, 3.20000004768372, 0],
+      "voltage_slave": [0, 0, 0]
+    },
+    "qsaved_total_bdc": {
+      "afci_fault_status": 0,
+      "control": [
+        {
+          "bdc_cmd1": 0,
+          "bdc_cmd2": 0,
+          "bdc_dclink_target_power": 0,
+          "bdc_dclink_target_voltage": 0
+        },
+        {
+          "bdc_cmd1": 0,
+          "bdc_cmd2": 0,
+          "bdc_dclink_target_power": 0,
+          "bdc_dclink_target_voltage": 0
+        },
+        {
+          "bdc_cmd1": 0,
+          "bdc_cmd2": 0,
+          "bdc_dclink_target_power": 0,
+          "bdc_dclink_target_voltage": 0
+        },
+        {
+          "bdc_cmd1": 0,
+          "bdc_cmd2": 0,
+          "bdc_dclink_target_power": 0,
+          "bdc_dclink_target_voltage": 0
+        }
+      ],
+      "num_avaliable_bdc": 0,
+      "rack": [
+        {
+          "bat_voltage": 0,
+          "battery_module_number": 0,
+          "battery_type": 0,
+          "bdc1_current_L1": 0,
+          "bdc2_current_L2": 0,
+          "bdc_operation_seq_index": 0,
+          "bdc_power": 0,
+          "bdc_protection_seq_index": 0,
+          "bdc_standby_seq_index": 0,
+          "bdc_status": 0,
+          "bdc_temperature": 0,
+          "bdc_total_current": 0,
+          "bdc_voltage": 0,
+          "bms_id": 0,
+          "dc_link_voltage": 0,
+          "filter_temperature": 0,
+          "smps_12v": 0,
+          "smps_5v": 0,
+          "soc": 0,
+          "soh": 0
+        },
+        {
+          "bat_voltage": 0,
+          "battery_module_number": 0,
+          "battery_type": 0,
+          "bdc1_current_L1": 0,
+          "bdc2_current_L2": 0,
+          "bdc_operation_seq_index": 0,
+          "bdc_power": 0,
+          "bdc_protection_seq_index": 0,
+          "bdc_standby_seq_index": 0,
+          "bdc_status": 0,
+          "bdc_temperature": 0,
+          "bdc_total_current": 0,
+          "bdc_voltage": 0,
+          "bms_id": 0,
+          "dc_link_voltage": 0,
+          "filter_temperature": 0,
+          "smps_12v": 0,
+          "smps_5v": 0,
+          "soc": 0,
+          "soh": 0
+        },
+        {
+          "bat_voltage": 0,
+          "battery_module_number": 0,
+          "battery_type": 0,
+          "bdc1_current_L1": 0,
+          "bdc2_current_L2": 0,
+          "bdc_operation_seq_index": 0,
+          "bdc_power": 0,
+          "bdc_protection_seq_index": 0,
+          "bdc_standby_seq_index": 0,
+          "bdc_status": 0,
+          "bdc_temperature": 0,
+          "bdc_total_current": 0,
+          "bdc_voltage": 0,
+          "bms_id": 0,
+          "dc_link_voltage": 0,
+          "filter_temperature": 0,
+          "smps_12v": 0,
+          "smps_5v": 0,
+          "soc": 0,
+          "soh": 0
+        },
+        {
+          "bat_voltage": 0,
+          "battery_module_number": 0,
+          "battery_type": 0,
+          "bdc1_current_L1": 0,
+          "bdc2_current_L2": 0,
+          "bdc_operation_seq_index": 0,
+          "bdc_power": 0,
+          "bdc_protection_seq_index": 0,
+          "bdc_standby_seq_index": 0,
+          "bdc_status": 0,
+          "bdc_temperature": 0,
+          "bdc_total_current": 0,
+          "bdc_voltage": 0,
+          "bms_id": 0,
+          "dc_link_voltage": 0,
+          "filter_temperature": 0,
+          "smps_12v": 0,
+          "smps_5v": 0,
+          "soc": 0,
+          "soh": 0
+        }
+      ]
+    }
+  },
+  "gateway_conn": {
+    "status": 0,
+    "time": "1970-01-01 00:00:00",
+    "type": 0
+  },
+  "gateway_model": {
+    "name": ""
+  },
+  "meter_conn": {
+    "status": 1,
+    "time": "2025-05-27 05:20:24",
+    "type": 2
+  },
+  "meter_info": {
+    "grid_active_power": -14.8000001907349,
+    "grid_apparent_power": 783.599975585938,
+    "grid_current": 3.2649998664856,
+    "grid_hz": 49.9720001220703,
+    "grid_power_factor": -0.0179999992251396,
+    "grid_reactive_power": -677.400024414063,
+    "grid_voltage": 240
+  },
+  "current_avg_soc": 66.9000015258789
+}

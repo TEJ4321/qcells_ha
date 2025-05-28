@@ -73,6 +73,8 @@ SENSOR_TYPES = {
         lambda d: d["current_avg_soc"]
     ],
 
+
+
     # PV
     "pv1": [
         "PV Power 1", "W", "power",
@@ -311,6 +313,7 @@ class QcellsSensor(SensorEntity):
         self._attr_unique_id = f"qcells_{key}"
         self._entry = entry
         self._sensor_key = key
+        self._attr_suggested_display_precision = rounding_amount
 
         group = SENSOR_DEVICE_MAP.get(self._sensor_key, "system")
         info = DEVICE_INFO_MAP[group]
@@ -353,6 +356,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         self._last_update = None
         self._energy = 0.0
         self._device_group = device_group
+        self._attr_suggested_display_precision = rounding_amount
 
         # Use the value function from SENSOR_TYPES
         self._value_fn = SENSOR_TYPES[power_sensor_key][3]
