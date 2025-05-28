@@ -4,6 +4,8 @@ from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, Sen
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 
+rounding_amount = 2  # Number of decimal places to round to
+
 SENSOR_TYPES = {
     # Battery
     "battery_power": [
@@ -289,8 +291,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
         name, unit, sensor_type, _ = val
         if unit == "W":  # Only for power sensors
             group = SENSOR_DEVICE_MAP.get(key, "system")
-            sensor_name = f"Qcells {name} Energy"
-            virtual_sensors.append(QcellsVirtualEnergySensor(coordinator, entry, key, sensor_name, group))
+            # Replace "Power" with "Energy" only if present, otherwise just use the name
+            if "Power" in name:
+                energy_name = name.replace("Power", "Energy").strip()
+            else:
+                energy_name = f"{name} Energy"
+            virtual_sensors.append(QcellsVirtualEnergySensor(coordinator, entry, key, energy_name, group))
 
     async_add_entities(virtual_sensors)
 
@@ -319,7 +325,11 @@ class QcellsSensor(SensorEntity):
     async def async_update(self):
         await self.coordinator.async_request_refresh()
         try:
-            self._attr_native_value = self.value_fn(self.coordinator.data)
+            value = self.value_fn(self.coordinator.data)
+            if isinstance(value, float):
+                self._attr_native_value = round(value, rounding_amount)
+            else:
+                self._attr_native_value = value
         except Exception:
             self._attr_native_value = None
         self._attr_available = self.coordinator.last_update_success
@@ -369,7 +379,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
     async def async_update(self):
         # Called by HA to update the sensor
         await self.async_calculate_energy()
-        self._attr_native_value = round(self._energy, 2)
+        self._attr_native_value = round(self._energy, rounding_amount)
 
     async def async_calculate_energy(self):
         """Calculate energy based on power sensor data."""
