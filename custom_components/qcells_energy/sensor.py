@@ -69,7 +69,7 @@ SENSOR_TYPES = {
         lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_discharge_amount_wh"]
     ],
     "soc": [
-        "State of Charge", "%", "battery",
+        "Battery Charge State", "%", "battery",
         lambda d: d["current_avg_soc"]
     ],
 
@@ -77,31 +77,31 @@ SENSOR_TYPES = {
 
     # PV
     "pv1": [
-        "PV Power 1", "W", "power",
+        "Solar Array 1 Power", "W", "power",
         lambda d: d["ess_all"]["pv_info"]["power"][0]
     ],
     "pv2": [
-        "PV Power 2", "W", "power",
+        "Solar Array 2 Power", "W", "power",
         lambda d: d["ess_all"]["pv_info"]["power"][1]
     ],
     "pv_total_power": [
-        "PV Total Power", "W", "power",
+        "Total Solar Power", "W", "power",
         lambda d: d["ess_all"]["pv_info"]["total_power"]
     ],
     "pv1_voltage": [
-        "PV1 Voltage", "V", "voltage",
+        "Solar Array 1 Voltage", "V", "voltage",
         lambda d: d["ess_all"]["pv_info"]["voltage"][0]
     ],
     "pv2_voltage": [
-        "PV2 Voltage", "V", "voltage",
+        "Solar Array 2 Voltage", "V", "voltage",
         lambda d: d["ess_all"]["pv_info"]["voltage"][1]
     ],
     "pv1_current": [
-        "PV1 Current", "A", "current",
+        "Solar Array 1 Current", "A", "current",
         lambda d: d["ess_all"]["pv_info"]["current"][0]
     ],
     "pv2_current": [
-        "PV2 Current", "A", "current",
+        "Solar Array 2 Current", "A", "current",
         lambda d: d["ess_all"]["pv_info"]["current"][1]
     ],
 
@@ -109,6 +109,14 @@ SENSOR_TYPES = {
     "grid_power": [
         "Grid Active Power", "W", "power",
         lambda d: d["meter_info"]["grid_active_power"]
+    ],
+    "grid_power_consumption": [ 
+        "Grid Power Consumption", "W", "power",
+        lambda d: abs(min(d["meter_info"]["grid_active_power"], 0))
+    ],
+    "grid_power_return": [
+        "Grid Power Return", "W", "power",
+        lambda d: max(d["meter_info"]["grid_active_power"], 0)
     ],
     "grid_voltage": [
         "Grid Voltage", "V", "voltage",
@@ -231,6 +239,8 @@ SENSOR_DEVICE_MAP = {
 
     # Grid
     "grid_power": "grid",
+    "grid_power_consumption": "grid",
+    "grid_power_return": "grid",
     "grid_voltage": "grid",
     "grid_current": "grid",
     "grid_power_factor": "grid",
@@ -305,7 +315,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 class QcellsSensor(SensorEntity):
     def __init__(self, coordinator, entry, key, name, unit, sensor_type, value_fn):
-        self._attr_name = f"Qcells {name}"
+        self._attr_name = name
         self._attr_native_unit_of_measurement = unit
         self._attr_device_class = sensor_type
         self.coordinator = coordinator
