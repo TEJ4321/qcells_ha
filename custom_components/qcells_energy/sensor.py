@@ -3,6 +3,7 @@ from .const import DOMAIN
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
+from functools import cached_property
 
 SENSOR_TYPES = {
     # Battery
@@ -58,20 +59,26 @@ SENSOR_TYPES = {
         "Battery Discharge Cycle Count", "", "none",
         lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["discharge_cycle_count"]
     ],
-    "battery_total_charge_wh": [
-        "Battery Total Charge (Wh)", "Wh", "energy",
-        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_charge_amount_wh"]
+    "battery_total_charge": [
+        "Battery Total Charge", "kWh", "energy",
+        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_charge_amount_wh"]/1000
     ],
-    "battery_total_discharge_wh": [
-        "Battery Total Discharge (Wh)", "Wh", "energy",
-        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_discharge_amount_wh"]
+    "battery_total_discharge": [
+        "Battery Total Discharge", "kWh", "energy",
+        lambda d: d["ess_all"]["bat_info"]["bat_history_info"][0]["total_discharge_amount_wh"]/1000
     ],
     "soc": [
-        "Battery Charge State", "%", "battery",
+        "Battery State of Charge", "%", "battery",
         lambda d: d["current_avg_soc"]
     ],
-
-
+    "battery_charging_state": [
+        "Battery Charging State", "", "enum",
+        lambda d: (
+            "Charging" if d["ess_all"]["inverter_info"]["bdc"]["power"] < -0.5
+            else "Discharging" if d["ess_all"]["inverter_info"]["bdc"]["power"] > 0.5
+            else "Standby"
+        )
+    ],
 
     # PV
     "pv1": [
@@ -196,15 +203,80 @@ SENSOR_TYPES = {
     ],
 
     # Load
-    "current_load": [
+    "current_load": [ # This is a virtual sensor that calculates current house load
         "Current Load", "W", "power",
         lambda d: (
-            d["ess_all"]["inverter_info"]["bdc"]["power"]
-            + d["meter_info"]["grid_active_power"]
-            + d["ess_all"]["pv_info"]["power"][0]
-            + d["ess_all"]["pv_info"]["power"][1]
+            d["ess_all"]["pv_info"]["total_power"] # Total solar power generation (positive)
+            - d["meter_info"]["grid_active_power"] # Grid power consumption (negative when exporting)
+            + d["ess_all"]["inverter_info"]["bdc"]["power"] # Battery power use (negative when charging)
         )
     ],
+}
+
+ICON_MAP = {
+    # Battery
+    "battery_power": "mdi:battery-charging",
+    "battery_power_energy": "mdi:battery-charging-outline",
+    "battery_power_charging": "mdi:battery-arrow-up",
+    "battery_power_charging_energy": "mdi:battery-arrow-up-outline",
+    "battery_power_discharging": "mdi:battery-arrow-down",
+    "battery_power_discharging_energy": "mdi:battery-arrow-down-outline",
+    "battery_voltage": "mdi:car-battery",
+    "battery_current": "mdi:current-dc",
+    "battery_rack_voltage": "mdi:car-battery",
+    "battery_rack_current": "mdi:current-dc",
+    "battery_avg_cell_temp": "mdi:thermometer",
+    "battery_max_cell_temp": "mdi:thermometer-high",
+    "battery_min_cell_temp": "mdi:thermometer-low",
+    "battery_soh": "mdi:battery-heart",
+    "battery_charge_cycle_count": "mdi:counter",
+    "battery_discharge_cycle_count": "mdi:counter",
+    "battery_total_charge": "mdi:battery-plus",
+    "battery_total_discharge": "mdi:battery-minus",
+    # PV
+    "pv1": "mdi:solar-power",
+    "pv1_energy": "mdi:solar-power-variant",
+    "pv2": "mdi:solar-power",
+    "pv2_energy": "mdi:solar-power-variant",
+    "pv_total_power": "mdi:solar-power",
+    "pv_total_energy": "mdi:solar-power-variant",
+    "pv1_voltage": "mdi:flash",
+    "pv2_voltage": "mdi:flash",
+    "pv1_current": "mdi:current-dc",
+    "pv2_current": "mdi:current-dc",
+    # Grid
+    "grid_power": "mdi:transmission-tower",
+    "grid_power_energy": "mdi:transmission-tower-export",
+    "grid_power_consumption": "mdi:transmission-tower-import",
+    "grid_power_consumption_energy": "mdi:transmission-tower-import",
+    "grid_power_return": "mdi:transmission-tower-export",
+    "grid_power_return_energy": "mdi:transmission-tower-export",
+    "grid_voltage": "mdi:flash",
+    "grid_current": "mdi:current-ac",
+    "grid_power_factor": "mdi:sigma",
+    "grid_frequency": "mdi:sine-wave",
+    "grid_reactive_power": "mdi:flash-outline",
+    # Inverter
+    "inverter_active_power": "mdi:lightning-bolt",
+    "inverter_active_energy": "mdi:lightning-bolt-outline",
+    "inverter_apparent_power": "mdi:lightning-bolt-outline",
+    "inverter_apparent_energy": "mdi:lightning-bolt-circle",
+    "inverter_voltage": "mdi:flash",
+    "inverter_current": "mdi:current-ac",
+    "inverter_frequency": "mdi:sine-wave",
+    "inverter_power_factor": "mdi:sigma",
+    "inverter_temperature": "mdi:thermometer",
+    # System/Status
+    "system_temperature": "mdi:thermometer",
+    "battery_status_flag": "mdi:alert",
+    "simulation_mode_enabled": "mdi:toggle-switch",
+    "auto_charge_discharge_enabled": "mdi:toggle-switch",
+    # Error/Alarm
+    "current_fault_history_size": "mdi:alert-circle",
+    "current_fault_list": "mdi:alert-box",
+    # Load
+    "current_load": "mdi:home-lightning-bolt",
+    "current_load_energy": "mdi:home-lightning-bolt-outline",
 }
 
 SENSOR_DEVICE_MAP = {
@@ -222,8 +294,9 @@ SENSOR_DEVICE_MAP = {
     "battery_soh": "battery",
     "battery_charge_cycle_count": "battery",
     "battery_discharge_cycle_count": "battery",
-    "battery_total_charge_wh": "battery",
-    "battery_total_discharge_wh": "battery",
+    "battery_total_charge": "battery",
+    "battery_total_discharge": "battery",
+    "battery_charging_state": "battery",
     "soc": "battery",
 
     # PV
@@ -295,6 +368,7 @@ SIMPLE_SENSOR_KEYS = [
     "battery_voltage",
     "battery_current",
     "battery_soh",
+    "battery_charging_state",
     "battery_avg_cell_temp",
     "pv_total_power",
     "current_load",
@@ -360,7 +434,7 @@ class QcellsSensor(SensorEntity):
         self._entry = entry
         self._sensor_key = key
         self._attr_suggested_display_precision = display_precision
-
+        self._attr_icon = ICON_MAP.get(key, None)
         group = SENSOR_DEVICE_MAP.get(self._sensor_key, "system")
         info = DEVICE_INFO_MAP[group]
         self._attr_device_info = {
@@ -370,6 +444,21 @@ class QcellsSensor(SensorEntity):
             "model": info["model"],
             "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
         }
+
+    @cached_property
+    def icon(self) -> str | None:
+        # Dynamic icon for battery_charging_state
+        if self._sensor_key == "battery_charging_state":
+            state = getattr(self, "native_value", None)
+            if state == "Charging":
+                return "mdi:battery-arrow-up_outline"
+            elif state == "Discharging":
+                return "mdi:battery-arrow-down_outline"
+            elif state == "Standby":
+                return "mdi:battery_check_outline"
+            else:
+                return "mdi:battery"
+        return self._attr_icon
 
     async def async_update(self):
         await self.coordinator.async_request_refresh()
@@ -389,7 +478,6 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         # Remove "Power" from the name if present, and remove trailing whitespace
         if "Power" in name:
             name = name.replace("Power", "Energy").strip()
-        self._attr_name = f"Qcells {name}"
         self._power_sensor_key = power_sensor_key
         self._attr_name = name
         self._attr_unique_id = f"qcells_{power_sensor_key}_virtual_energy"
@@ -400,6 +488,11 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         self._energy = 0.0
         self._device_group = device_group
         self._attr_suggested_display_precision = display_precision
+
+        # Use a different icon for energy sensors
+        energy_icon_key = f"{power_sensor_key}_energy"
+        self._attr_icon = ICON_MAP.get(energy_icon_key, "mdi:lightning-bolt-outline")
+
 
         # Use the value function from SENSOR_TYPES
         self._value_fn = SENSOR_TYPES[power_sensor_key][3]
