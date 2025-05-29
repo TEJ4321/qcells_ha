@@ -451,7 +451,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
             self._last_update = current_time
             return
 
-        # Convert power to kW and calculate energy in Wh
-        energy_delta = (power_value / 1000) * (time_diff / 3600)  # Wh
+        # Convert power to kW and calculate energy in kWh
+        energy_delta = (power_value / 1000) * (time_diff / 3600)  # kWh
         self._energy += energy_delta
         self._last_update = current_time
