@@ -4,8 +4,6 @@ from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, Sen
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 
-rounding_amount = 2  # Number of decimal places to round to
-
 SENSOR_TYPES = {
     # Battery
     "battery_power": [
@@ -289,16 +287,53 @@ DEVICE_INFO_MAP = {
     },
 }
 
+SIMPLE_SENSOR_KEYS = [
+    "soc",
+    "battery_power",
+    "battery_power_charging",
+    "battery_power_discharging",
+    "battery_voltage",
+    "battery_current",
+    "battery_soh",
+    "battery_avg_cell_temp",
+    "pv_total_power",
+    "current_load",
+    "system_temperature",
+    "grid_power",
+    "grid_power_consumption",
+    "grid_power_return",
+    "grid_voltage",
+    "grid_current",
+    "grid_frequency",
+    "inverter_active_power",
+    "inverter_voltage",
+    "inverter_current",
+    "inverter_frequency",
+]
+
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    
+    integration_mode = entry.data.get("integration_mode", "simple")
+    display_precision = entry.data.get("display_precision", 2)
+
+    if integration_mode == "simple":
+        sensor_keys = SIMPLE_SENSOR_KEYS
+    else:
+        sensor_keys = list(SENSOR_TYPES.keys())
+
     # Main sensors
-    sensors = [QcellsSensor(coordinator, entry, key, *val) for key, val in SENSOR_TYPES.items()]
+    # =======================================================================================
+    sensors = [
+        QcellsSensor(coordinator, entry, key, name, unit, sensor_type, value_fn, display_precision)
+        for key in sensor_keys
+        for (name, unit, sensor_type, value_fn) in [SENSOR_TYPES[key]]
+    ]
     async_add_entities(sensors)
 
     # Virtual energy sensors
+    # =======================================================================================
     virtual_sensors = []
-    # Add virtual energy sensors for all power sensors
+    # Add virtual energy sensors for all power sensors (that are exposed based on simple/detailed mode)
     for key, val in SENSOR_TYPES.items():
         name, unit, sensor_type, _ = val
         if unit == "W":  # Only for power sensors
@@ -308,13 +343,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
                 energy_name = name.replace("Power", "Energy").strip()
             else:
                 energy_name = f"{name} Energy"
-            virtual_sensors.append(QcellsVirtualEnergySensor(coordinator, entry, key, energy_name, group))
-
+            virtual_sensors.append(
+                QcellsVirtualEnergySensor(coordinator, entry, key, energy_name, group, display_precision)
+            )
     async_add_entities(virtual_sensors)
 
 
 class QcellsSensor(SensorEntity):
-    def __init__(self, coordinator, entry, key, name, unit, sensor_type, value_fn):
+    def __init__(self, coordinator, entry, key, name, unit, sensor_type, value_fn, display_precision):
         self._attr_name = name
         self._attr_native_unit_of_measurement = unit
         self._attr_device_class = sensor_type
@@ -323,7 +359,7 @@ class QcellsSensor(SensorEntity):
         self._attr_unique_id = f"qcells_{key}"
         self._entry = entry
         self._sensor_key = key
-        self._attr_suggested_display_precision = rounding_amount
+        self._attr_suggested_display_precision = display_precision
 
         group = SENSOR_DEVICE_MAP.get(self._sensor_key, "system")
         info = DEVICE_INFO_MAP[group]
@@ -347,7 +383,7 @@ class QcellsSensor(SensorEntity):
 class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
     """Virtual energy sensor that integrates power over time."""
 
-    def __init__(self, coordinator, entry, power_sensor_key, name, device_group):
+    def __init__(self, coordinator, entry, power_sensor_key, name, device_group, display_precision):
         self.coordinator = coordinator
         self._entry = entry
         # Remove "Power" from the name if present, and remove trailing whitespace
@@ -363,7 +399,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         self._last_update = None
         self._energy = 0.0
         self._device_group = device_group
-        self._attr_suggested_display_precision = rounding_amount
+        self._attr_suggested_display_precision = display_precision
 
         # Use the value function from SENSOR_TYPES
         self._value_fn = SENSOR_TYPES[power_sensor_key][3]

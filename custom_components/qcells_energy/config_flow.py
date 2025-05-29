@@ -1,7 +1,7 @@
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlowResult
-from .const import DOMAIN, CONF_IP, CONF_PASSWORD, CONF_UPDATE_INTERVAL
+from .const import DOMAIN, CONF_IP, CONF_PASSWORD, CONF_UPDATE_INTERVAL, CONF_INTEGRATION_MODE, CONF_DISPLAY_PRECISION
 
 @config_entries.HANDLERS.register(DOMAIN)
 class QcellsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -20,7 +20,9 @@ class QcellsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_IP, default="myqhome"): str,
                 vol.Required(CONF_PASSWORD): str,
+                vol.Required(CONF_INTEGRATION_MODE, default="simple"): vol.In(["simple", "detailed"]),
                 vol.Required(CONF_UPDATE_INTERVAL, default=10): int,
+                vol.Required(CONF_DISPLAY_PRECISION, default=2): int,
             }),
             errors=errors,
         )

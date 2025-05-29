@@ -6,8 +6,15 @@
                 "description": "Enter the IP and password for your Qcells inverter as well as how frequently it should be polled. Please refrain from using too quick of a value here.",
                 "data": {
                     "ip_address": "IP Address",
+                    "ip_address_description": "The IP address of your Qcells inverter.",
                     "password": "Password",
-                    "update_interval": "Update Interval"
+                    "integration_mode": "Integration Mode",
+                    "integration_mode_description": "How many sensors do you want this integration to expose? Simple covers most generally useful stats but detailed shows a lot more - mostly diagnostic statistics.",
+                    "password_description": "The installer password for your inverter.",
+                    "update_interval": "Update Interval",
+                    "update_interval_description": "How often to poll the inverter for new data. For some reason home assistant is only doing this every 30 secs. IDK how to fix this yet.",
+                    "display_precision": "Display Precision",
+                    "display_precision_description": "How many decimal places to display for sensor values. 2 is the default and recommended value."
                 }
             }
         }
