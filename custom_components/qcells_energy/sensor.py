@@ -117,11 +117,11 @@ SENSOR_TYPES = {
     ],
     "grid_power_consumption": [ 
         "Grid Power Consumption", "W", "power",
-        lambda d: abs(min(d["meter_info"]["grid_active_power"], 0))
+        lambda d: max(d["meter_info"]["grid_active_power"], 0)
     ],
     "grid_power_return": [
         "Grid Power Return", "W", "power",
-        lambda d: max(d["meter_info"]["grid_active_power"], 0)
+        lambda d: abs(min(d["meter_info"]["grid_active_power"], 0))
     ],
     "grid_voltage": [
         "Grid Voltage", "V", "voltage",
@@ -246,11 +246,11 @@ ICON_MAP = {
     "pv2_current": "mdi:current-dc",
     # Grid
     "grid_power": "mdi:transmission-tower",
-    "grid_power_energy": "mdi:transmission-tower-export",
-    "grid_power_consumption": "mdi:transmission-tower-import",
-    "grid_power_consumption_energy": "mdi:transmission-tower-import",
-    "grid_power_return": "mdi:transmission-tower-export",
-    "grid_power_return_energy": "mdi:transmission-tower-export",
+    "grid_power_energy": "mdi:transmission-tower",
+    "grid_power_consumption": "mdi:transmission-tower-export",
+    "grid_power_consumption_energy": "mdi:transmission-tower-export",
+    "grid_power_return": "mdi:transmission-tower-import",
+    "grid_power_return_energy": "mdi:transmission-tower-import",
     "grid_voltage": "mdi:flash",
     "grid_current": "mdi:current-ac",
     "grid_power_factor": "mdi:sigma",
