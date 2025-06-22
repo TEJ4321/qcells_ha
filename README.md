@@ -1,4 +1,11 @@
 # QCells Energy for Home Assistant
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="custom_components/qcells_energy/dark_logo.png">
+    <source media="(prefers-color-scheme: light)" srcset="custom_components/qcells_energy/logo.png">
+    <img alt="Qcells Logo" src="custom_components/qcells_energy/logo.png" width="400"/>
+  </picture>
+</p>
 
 ## Description
 QCells Energy for Home Assistant is a custom integration that allows you to monitor and visualize data from your Q Cells HS4, HS5, and similar systems directly within Home Assistant. The integration communicates with your Q.VOLT inverter over your local network, providing real-time access to key solar, battery, inverter, and grid statistics.
