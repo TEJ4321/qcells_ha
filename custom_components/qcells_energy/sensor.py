@@ -387,8 +387,8 @@ SIMPLE_SENSOR_KEYS = [
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    integration_mode = entry.data.get("integration_mode", "simple")
-    display_precision = entry.data.get("display_precision", 2)
+    integration_mode = entry.options.get("integration_mode", entry.data.get("integration_mode", "simple"))
+    display_precision = entry.options.get("display_precision", entry.data.get("display_precision", 2))
 
     if integration_mode == "simple":
         sensor_keys = SIMPLE_SENSOR_KEYS

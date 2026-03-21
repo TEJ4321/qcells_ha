@@ -18,5 +18,18 @@
                 }
             }
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Qcells Configuration",
+                "description": "Adjust the settings for your Qcells inverter integration.",
+                "data": {
+                    "integration_mode": "Integration Mode",
+                    "update_interval": "Update Interval",
+                    "display_precision": "Display Precision"
+                }
+            }
+        }
     }
 }
