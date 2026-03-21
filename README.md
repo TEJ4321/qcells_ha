@@ -1,9 +1,9 @@
 # QCells Energy for Home Assistant
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="custom_components/qcells_energy/dark_logo.png">
-    <source media="(prefers-color-scheme: light)" srcset="custom_components/qcells_energy/logo.png">
-    <img alt="Qcells Logo" src="custom_components/qcells_energy/logo.png" width="400"/>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/TEJ4321/qcells_ha/main/custom_components/qcells_energy/dark_logo.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/TEJ4321/qcells_ha/main/custom_components/qcells_energy/logo.png">
+    <img alt="Qcells Logo" src="https://raw.githubusercontent.com/TEJ4321/qcells_ha/main/custom_components/qcells_energy/logo.png" width="400"/>
   </picture>
 </p>
 
