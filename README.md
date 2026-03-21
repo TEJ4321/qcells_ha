@@ -46,9 +46,8 @@ Get the Home Assistant Community Store (HACS) at https://hacs.xyz/. This makes i
 
 2. Install the Qcells Energy custom component and Restart home assistant
 3. Go to Settings->Devices & services->ADD INTEGRATION and add ***Qcells Energy***.
-4. Configure it based on the IP address of your Q.VOLT inverter. 
-
-
+4. Configure it based on the IP address of your Q.VOLT inverter.
+    - You can choose the polling interval you want - just know that the more frequent you make this, the more data you will accumulate. I recommend setting it to around 5-10 seconds but do whatever you want I haven't tested sub-second accuracy but go ahead if you want.
 
 This project would not have been possible without the information contained within this forum discussion:
 https://community.home-assistant.io/t/hanwha-q-cells/446745/41
