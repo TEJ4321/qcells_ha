@@ -428,6 +428,19 @@ class QcellsSensor(SensorEntity):
         self._attr_name = name
         self._attr_native_unit_of_measurement = unit
         self._attr_device_class = sensor_type
+
+        # Assign state_class to enable Long-Term Statistics
+        if sensor_type == "energy":
+            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        elif sensor_type in [
+            "power", "voltage", "current", "temperature",
+            "battery", "frequency", "power_factor",
+            "reactive_power", "apparent_power"
+        ]:
+            self._attr_state_class = SensorStateClass.MEASUREMENT
+        elif key in ["battery_charge_cycle_count", "battery_discharge_cycle_count"]:
+            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+
         self.coordinator = coordinator
         self.value_fn = value_fn
         self._attr_unique_id = f"qcells_{key}"
