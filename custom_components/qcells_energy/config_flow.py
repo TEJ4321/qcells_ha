@@ -14,7 +14,7 @@ class QcellsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
         """Create the options flow."""
-        return QcellsOptionsFlowHandler(config_entry)
+        return QcellsOptionsFlowHandler()
 
     async def async_step_user(self, user_input=None) -> ConfigFlowResult:
         errors = {}
@@ -37,10 +37,6 @@ class QcellsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 class QcellsOptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
-
     async def async_step_init(self, user_input=None) -> ConfigFlowResult:
         """Manage the options."""
         if user_input is not None:
