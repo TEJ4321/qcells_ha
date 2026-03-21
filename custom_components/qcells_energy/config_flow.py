@@ -30,7 +30,7 @@ class QcellsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_IP, default="myqhome"): str,
                 vol.Required(CONF_PASSWORD): str,
                 vol.Required(CONF_INTEGRATION_MODE, default="simple"): vol.In(["simple", "detailed"]),
-                vol.Required(CONF_UPDATE_INTERVAL, default=10): int,
+                vol.Required(CONF_UPDATE_INTERVAL, default=10): float,
                 vol.Required(CONF_DISPLAY_PRECISION, default=2): int,
             }),
             errors=errors,
@@ -55,7 +55,7 @@ class QcellsOptionsFlowHandler(config_entries.OptionsFlow):
 
         options_schema = vol.Schema({
             vol.Required(CONF_INTEGRATION_MODE, default=current_mode): vol.In(["simple", "detailed"]),
-            vol.Required(CONF_UPDATE_INTERVAL, default=current_interval): int,
+            vol.Required(CONF_UPDATE_INTERVAL, default=current_interval): float,
             vol.Required(CONF_DISPLAY_PRECISION, default=current_precision): int,
         })
 

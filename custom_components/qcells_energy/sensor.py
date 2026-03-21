@@ -1,9 +1,9 @@
-from homeassistant.components.sensor import SensorEntity
 from .const import DOMAIN
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.core import callback
 from homeassistant.util import dt as dt_util
-from functools import cached_property
 
 SENSOR_TYPES = {
     # Battery
@@ -423,8 +423,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(virtual_sensors)
 
 
-class QcellsSensor(SensorEntity):
+class QcellsSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, entry, key, name, unit, sensor_type, value_fn, display_precision):
+        super().__init__(coordinator)
         self._attr_name = name
         self._attr_native_unit_of_measurement = unit
         self._attr_device_class = sensor_type
@@ -441,7 +442,6 @@ class QcellsSensor(SensorEntity):
         elif key in ["battery_charge_cycle_count", "battery_discharge_cycle_count"]:
             self._attr_state_class = SensorStateClass.TOTAL_INCREASING
 
-        self.coordinator = coordinator
         self.value_fn = value_fn
         self._attr_unique_id = f"qcells_{key}"
         self._entry = entry
@@ -458,7 +458,7 @@ class QcellsSensor(SensorEntity):
             "configuration_url": f"https://{self._entry.data.get('ip_address')}:7000/",
         }
 
-    @cached_property
+    @property
     def icon(self) -> str | None:
         # Dynamic icon for battery_charging_state
         if self._sensor_key == "battery_charging_state":
@@ -473,20 +473,21 @@ class QcellsSensor(SensorEntity):
                 return "mdi:battery"
         return self._attr_icon
 
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
+    @property
+    def native_value(self):
+        """Return the native value of the sensor."""
+        if not self.coordinator.data:
+            return None
         try:
-            value = self.value_fn(self.coordinator.data)
-            self._attr_native_value = value
+            return self.value_fn(self.coordinator.data)
         except Exception:
-            self._attr_native_value = None
-        self._attr_available = self.coordinator.last_update_success
+            return None
 
-class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
+class QcellsVirtualEnergySensor(CoordinatorEntity, RestoreEntity, SensorEntity):
     """Virtual energy sensor that integrates power over time."""
 
     def __init__(self, coordinator, entry, power_sensor_key, name, device_group, display_precision):
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._entry = entry
         # Remove "Power" from the name if present, and remove trailing whitespace
         if "Power" in name:
@@ -497,6 +498,10 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         self._attr_native_unit_of_measurement = "kWh"
         self._attr_device_class = SensorDeviceClass.ENERGY
         self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        
+        if name == "Battery Energy" or name == "Grid Active Energy":
+            self._attr_state_class = SensorStateClass.TOTAL # These can be negative.
+            
         self._last_update = None
         self._energy = 0.0
         self._device_group = device_group
@@ -521,6 +526,7 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
         }
 
     async def async_added_to_hass(self):
+        await super().async_added_to_hass()
         last_state = await self.async_get_last_state()
         if last_state is not None and last_state.state not in (None, "unknown", "unavailable"):
             try:
@@ -529,12 +535,14 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
                 self._energy = 0.0
         self._last_update = dt_util.utcnow()
 
-    async def async_update(self):
-        # Called by HA to update the sensor
-        await self.async_calculate_energy()
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._calculate_energy()
         self._attr_native_value = self._energy
+        super()._handle_coordinator_update()
 
-    async def async_calculate_energy(self):
+    def _calculate_energy(self):
         """Calculate energy based on power sensor data."""
         if not self.coordinator.data or not self.coordinator.last_update_success:
             return
@@ -544,8 +552,6 @@ class QcellsVirtualEnergySensor(RestoreEntity, SensorEntity):
             power_value = self._value_fn(self.coordinator.data)
         except Exception:
             power_value = None
-
-        # power_value = self.coordinator.data.get(self._power_sensor_key)
 
         if power_value is None or self._last_update is None:
             self._last_update = current_time
