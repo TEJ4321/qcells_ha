@@ -8,7 +8,7 @@
   "iot_class": "local_polling",
   "name": "QCells Energy",
   "requirements": ["requests"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icon": "icon.png",
   "logo": "logo.png"
 }

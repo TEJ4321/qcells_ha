@@ -30,7 +30,7 @@ class QcellsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_IP, default="myqhome"): str,
                 vol.Required(CONF_PASSWORD): str,
                 vol.Required(CONF_INTEGRATION_MODE, default="simple"): vol.In(["simple", "detailed"]),
-                vol.Required(CONF_UPDATE_INTERVAL, default=10): float,
+                vol.Required(CONF_UPDATE_INTERVAL, default=10): int,
                 vol.Required(CONF_DISPLAY_PRECISION, default=2): int,
             }),
             errors=errors,
@@ -43,6 +43,12 @@ class QcellsOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         # Grab the current settings from options, falling back to data (initial setup)
+        current_ip = self.config_entry.options.get(
+            CONF_IP, self.config_entry.data.get(CONF_IP, "myqhome")
+        )
+        current_password = self.config_entry.options.get(
+            CONF_PASSWORD, self.config_entry.data.get(CONF_PASSWORD)
+        )
         current_mode = self.config_entry.options.get(
             CONF_INTEGRATION_MODE, self.config_entry.data.get(CONF_INTEGRATION_MODE, "simple")
         )
@@ -54,8 +60,10 @@ class QcellsOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
         options_schema = vol.Schema({
+            vol.Required(CONF_IP, default=current_ip): str,
+            vol.Required(CONF_PASSWORD, default=current_password): str,
             vol.Required(CONF_INTEGRATION_MODE, default=current_mode): vol.In(["simple", "detailed"]),
-            vol.Required(CONF_UPDATE_INTERVAL, default=current_interval): float,
+            vol.Required(CONF_UPDATE_INTERVAL, default=current_interval): int,
             vol.Required(CONF_DISPLAY_PRECISION, default=current_precision): int,
         })
 
