@@ -207,7 +207,7 @@ SENSOR_TYPES = {
         "Current Load", "W", "power",
         lambda d: (
             d["ess_all"]["pv_info"]["total_power"] # Total solar power generation (positive)
-            - d["meter_info"]["grid_active_power"] # Grid power consumption (negative when exporting)
+            + d["meter_info"]["grid_active_power"] # Grid power consumption (negative when exporting)
             + d["ess_all"]["inverter_info"]["bdc"]["power"] # Battery power use (negative when charging)
         )
     ],
